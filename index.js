@@ -18,7 +18,7 @@ app.listen(port, () =>
 
 // https://mongoosejs.com/docs/
 const mongoose = require('mongoose');
-const User = require('./models/user');
+const product = require('./models/product');
 
 main().then(() => console.log("mongodb is connected")).catch(err => console.log(err));
 
@@ -36,9 +36,9 @@ app.post('/login', (req, res) => {
   }
 
   login({ email, password })
-    .then(user => {
-      console.log('user', user);
-      return res.status(200).send(user);
+    .then(product => {
+      console.log('product', product);
+      return res.status(200).send(product);
     })
     .catch(err => {
       console.log(`err`, err.message);
@@ -49,10 +49,10 @@ app.post('/login', (req, res) => {
 app.get('/list', (req, res) => {
   const { limit = 10 } = req.query;
 
-  getAllUsers(limit)
-    .then(users => {
-      console.log(`users`, users);
-      return res.status(200).send(users);
+  getAllproducts(limit)
+    .then(products => {
+      console.log(`products`, products);
+      return res.status(200).send(products);
     })
     .catch(err => {
       console.log(`err`, err);
@@ -63,12 +63,12 @@ app.get('/list', (req, res) => {
 app.post('/register', (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.status(401).send({ error: "missing user data" });
+    return res.status(401).send({ error: "missing product data" });
   }
-  addUsertoDB({ name, email, password })
-    .then(user => {
-      console.log(`Added user`, user);
-      return res.status(200).send(user);
+  addproducttoDB({ name, email, password })
+    .then(product => {
+      console.log(`Added product`, product);
+      return res.status(200).send(product);
     })
     .catch(err => {
       console.log(`err`, err);
@@ -76,38 +76,39 @@ app.post('/register', (req, res) => {
     });
 });
 
-const getAllUsers = async (n) => {
-  return await (User.find().limit(n).select('-password'));
+const getAllproducts = async (n) => {
+  return await (product.find().limit(n).select('-password'));
 }
 
-const addUsertoDB = async (user) => {
-  //check if user exists before adding him
-  const user_exists = await User.findOne({ email: user.email });
-  // console.log(user_exists);
-  if (!user_exists) {
+const addproducttoDB = async (product) => {
+  //check if product exists before adding him
+  const product_exists = await product.findOne({ email: product.email });
+  // console.log(product_exists);
+  if (!product_exists) {
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    const new_user = new User(user);
-    await new_user.save();
-    new_user.password = undefined;
-    return new_user;
+    product.password = await bcrypt.hash(product.password, salt);
+    const new_product = new product(product);
+    await new_product.save();
+    new_product.password = undefined;
+    return new_product;
   }
 
   throw new Error("email already exists");
 }
 
-const login = async (user) => {
-  //check if user exists
-  const existing_user = await User.findOne({ email: user.email });
-  // console.log(existing_user);
-  if (!existing_user) {
-    throw new Error("User doesn't exist!");
+const login = async (product) => {
+  //check if product exists
+  const existing_product = await product.findOne({ email: product.email });
+  // console.log(existing_product);
+  if (!existing_product) {
+    throw new Error("product doesn't exist!");
   }
-  if (!bcrypt.compareSync(user.password, existing_user.password)) {
+  if (!bcrypt.compareSync(product.password, existing_product.password)) {
     throw new Error("Login failed");
   }
-  existing_user.password = undefined;
-  return existing_user;
+  existing_product.password = undefined;
+  
+  return existing_product;
 }
 
 app.get('/', (req, res) => {
