@@ -107,7 +107,6 @@ const login = async (product) => {
     throw new Error("Login failed");
   }
   existing_product.password = undefined;
-  
   return existing_product;
 }
 
@@ -116,3 +115,5 @@ app.get('/', (req, res) => {
 });
 
 module.exports = app;
+
+
