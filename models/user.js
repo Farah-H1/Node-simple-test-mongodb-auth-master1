@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-const router = require("express").Router();
+//const router = require("express").Router();
 
 router.get("/usertest",(req, res) => {
   res.send("user test is successfull")
