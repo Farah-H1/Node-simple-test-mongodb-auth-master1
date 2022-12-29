@@ -6,10 +6,6 @@ const UserSchema = new mongoose.Schema({
   password:{type:string, required:true , unique:true},
   isAdmin:{type: Boolean , default: false},
            
-    // name: String,
-    // password: String,
-    // email: String,
-    // token: String
   },
   {timestamps :true}
   );
