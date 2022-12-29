@@ -1,23 +1,18 @@
 var mongoose = require('mongoose');
 
-//const router = require("express").Router();
-
-router.get("/usertest",(req, res) => {
-  res.send("user test is successfull")
-});
-
-router.post("userposttest",(req,res) => {
-const username = req.body.username
-res.send("your username is:" +username);
-});
-
-module.exports = router;
-
 const userSchema = new mongoose.Schema({
-    name: String,
-    password: String,
-    email: String,
-    token: String
-  });
+  username: {type:string, required:true , unique:true},
+  email: {type:string, required:true , unique:true},
+  password:{type:string, required:true , unique:true},
+  isAdmin:{type: Boolean , default: false},
+           
+    // name: String,
+    // password: String,
+    // email: String,
+    // token: String
+  },
+  {timestamps :true}
+  );
+  
   
 module.exports = mongoose.model('user', userSchema);
